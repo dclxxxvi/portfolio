@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+/dist
+/out
+/.next
+/out-tsc
+/tmp
+*.tsbuildinfo
+next-env.d.ts
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env*
+!.env.example
+
+# Claude
+CLAUDE.md
+CLAUDE.local.md
+.claude/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Private working files: the original resume (contains a phone number) and content drafts
+docs/RESUME.pdf
+docs/photo.jpg
+docs/RESUME_V2.md
+docs/CONTENT.md
+docs/CONTENT_CHECKLIST.md
