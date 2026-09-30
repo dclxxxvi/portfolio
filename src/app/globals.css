@@ -1,0 +1,222 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/*
+ * Palette is taken from the sunset in the hero photo:
+ * evening blue → pink → orange over a deep night sky.
+ */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #070919;
+  --bg-elevated: #0d1230;
+  --surface: rgb(255 255 255 / 0.035);
+  --surface-strong: rgb(255 255 255 / 0.07);
+  --border: rgb(255 255 255 / 0.09);
+  --border-strong: rgb(255 255 255 / 0.18);
+  --text: #eef0ff;
+  --muted: #a2a8cc;
+  --accent-blue: #7b93ff;
+  --accent-pink: #ff74b1;
+  --accent-orange: #ffb56b;
+  --glow: rgb(123 147 255 / 0.35);
+  --grain-opacity: 0.06;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f6f4fb;
+  --bg-elevated: #ffffff;
+  --surface: rgb(255 255 255 / 0.7);
+  --surface-strong: #ffffff;
+  --border: rgb(14 18 48 / 0.1);
+  --border-strong: rgb(14 18 48 / 0.2);
+  --text: #0e1230;
+  --muted: #4f5578;
+  --accent-blue: #3a57e0;
+  --accent-pink: #cf2f7c;
+  --accent-orange: #c2610f;
+  --glow: rgb(58 87 224 / 0.2);
+  --grain-opacity: 0.035;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-fg: var(--text);
+  --color-muted: var(--muted);
+  --color-blue: var(--accent-blue);
+  --color-pink: var(--accent-pink);
+  --color-orange: var(--accent-orange);
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-unbounded), var(--font-manrope), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --animate-aurora: aurora 18s ease-in-out infinite alternate;
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-pulse-dot: pulse-dot 2s ease-out infinite;
+
+  @keyframes aurora {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(4%, -6%, 0) scale(1.15);
+    }
+    100% {
+      transform: translate3d(-5%, 4%, 0) scale(0.95);
+    }
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @keyframes pulse-dot {
+    0% {
+      box-shadow: 0 0 0 0 rgb(74 222 128 / 0.6);
+    }
+    100% {
+      box-shadow: 0 0 0 10px rgb(74 222 128 / 0);
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--accent-pink);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  .text-gradient {
+    background: linear-gradient(
+      100deg,
+      var(--accent-blue) 0%,
+      var(--accent-pink) 50%,
+      var(--accent-orange) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .bg-sunset {
+    background: linear-gradient(
+      120deg,
+      var(--accent-blue) 0%,
+      var(--accent-pink) 55%,
+      var(--accent-orange) 100%
+    );
+  }
+
+  /* Card with a soft light that follows the cursor (see useSpotlight). */
+  .spotlight {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .spotlight::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(
+      420px circle at var(--spot-x, 50%) var(--spot-y, -40%),
+      var(--glow),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .spotlight:hover::before {
+    opacity: 1;
+  }
+
+  /* Gradient hairline border that works on any background. */
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      var(--accent-blue),
+      transparent 40%,
+      transparent 60%,
+      var(--accent-orange)
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .grain {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  .grain {
+    display: none;
+  }
+}
